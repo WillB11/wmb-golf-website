@@ -80,7 +80,7 @@ try {
   const response = await fetch("/api/enquiry", {
     method: "POST",
     body: formData,
-  })
+  });
 
   const data = await response.json()
 
