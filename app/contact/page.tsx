@@ -75,32 +75,32 @@ for (const file of selectedFiles) {
   setSubmitStatus("success")
   setSelectedFiles([])
   formRef.current?.reset()
+try {
+  const response = await fetch("/api/enquiry", {
+    method: "POST",
+    body: formData,
+  })
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new Error(data?.error || "Failed to submit enquiry")
+  }
+
+  setSubmitStatus("success")
+  setSelectedFiles([])
+  formRef.current?.reset()
 } catch (err: any) {
   console.error(err)
-  setErrorMessage(err.message || "Something went wrong")
+  setErrorMessage(err?.message || "Something went wrong")
   setSubmitStatus("error")
 } finally {
   setIsSubmitting(false)
 }
 
 
-      })
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to submit enquiry")
-      }
-
-      setSubmitStatus("success")
-      setSelectedFiles([])
-      formRef.current?.reset()
-    } catch (error) {
-      setSubmitStatus("error")
-      setErrorMessage(error instanceof Error ? error.message : "An unexpected error occurred")
-    } finally {
-      setIsSubmitting(false)
-    }
+      
   }
 
   return (
