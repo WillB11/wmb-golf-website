@@ -82,10 +82,10 @@ try {
     body: formData,
   });
 
-  const data = await response.json();
+const data = await response.json().catch(() => null);
 
   if (!response.ok) {
-    throw new Error(data?.error || "Failed to submit enquiry");
+  throw new Error((data as any)?.error || "Failed to submit enquiry");
   }
 
   setSubmitStatus("success")
