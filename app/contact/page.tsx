@@ -61,21 +61,6 @@ for (const file of selectedFiles) {
   uploadedFilePaths.push(filePath)
 }
 
-    try {
-  const response = await fetch("/api/enquiry", {
-    method: "POST",
-    body: formData, // ✅ FormData for images
-  })
-
-  const data = await response.json()
-
-  if (!response.ok) {
-    throw new Error(data.error || "Failed to submit enquiry")
-  }
-
-  setSubmitStatus("success")
-  setSelectedFiles([])
-  formRef.current?.reset()
 try {
   const response = await fetch("/api/enquiry", {
     method: "POST",
