@@ -308,6 +308,5 @@ try {
         </section>
       </main>
       <Footer />
-    </>
   );
 }
