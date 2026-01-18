@@ -87,7 +87,7 @@ const data = await response.json().catch(() => null);
   if (!response.ok) {
   throw new Error((data as any)?.error || "Failed to submit enquiry");
   }
-
+}
   setSubmitStatus("success")
   setSelectedFiles([])
   formRef.current?.reset()
