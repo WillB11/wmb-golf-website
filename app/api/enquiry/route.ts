@@ -7,15 +7,11 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
 
 export async function POST(request: NextRequest) {
   try {
-    const formData = await request.formData()
+    const body = await request.json()
+const { name, email, service, message, pageUrl, filePaths } = body
 
-    // Extract form fields
-    const name = formData.get("name") as string
-    const email = formData.get("email") as string
-    const service = formData.get("service") as string
-    const message = formData.get("message") as string
-    const pageUrl = formData.get("pageUrl") as string
 
+    
     // Validate required fields
     if (!name || !email) {
       return NextResponse.json({ error: "Name and email are required" }, { status: 400 })
@@ -36,7 +32,7 @@ export async function POST(request: NextRequest) {
         email,
         service: service || null,
         message: message || null,
-        file_urls: null,
+        file_urls: filePaths || null,
         page_url: pageUrl || null,
       })
       .select("id")

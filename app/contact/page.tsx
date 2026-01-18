@@ -8,6 +8,11 @@ import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Mail, Instagram, Upload, X, CheckCircle, Loader2 } from "lucide-react"
+import { createClient } from "@supabase/supabase-js"
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -34,25 +39,42 @@ export default function ContactPage() {
     setSubmitStatus("idle")
     setErrorMessage("")
 
-    const form = e.currentTarget
-    const formData = new FormData()
+    
 
-    // Add form fields
-    formData.append("name", (form.elements.namedItem("name") as HTMLInputElement).value)
-    formData.append("email", (form.elements.namedItem("email") as HTMLInputElement).value)
-    formData.append("service", (form.elements.namedItem("service") as HTMLSelectElement).value)
-    formData.append("message", (form.elements.namedItem("message") as HTMLTextAreaElement).value)
-    formData.append("pageUrl", window.location.href)
+   
+const uploadedFilePaths: string[] = []
 
-    // Add files
-    selectedFiles.forEach((file) => {
-      formData.append("files", file)
-    })
+for (const file of selectedFiles) {
+  const fileExt = file.name.split(".").pop()
+  const fileName = `${crypto.randomUUID()}.${fileExt}`
+  const filePath = `enquiries/${fileName}`
+
+  const { error } = await supabase.storage
+    .from("enquiry-uploads") // 👈 CHANGE THIS IF NEEDED
+    .upload(filePath, file)
+
+  if (error) {
+    throw error
+  }
+
+  uploadedFilePaths.push(filePath)
+}
 
     try {
-      const response = await fetch("/api/enquiry", {
-        method: "POST",
-        body: formData,
+      
+        const response = await fetch("/api/enquiry", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    name,
+    email,
+    service,
+    message,
+    pageUrl: window.location.href,
+    filePaths: uploadedFilePaths,
+  }),
+})
+
       })
 
       const data = await response.json()

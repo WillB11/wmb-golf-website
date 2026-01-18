@@ -220,7 +220,16 @@ export default function LaserEngravingPage() {
 
         await fetch("/api/send-logo", {
           method: "POST",
-          body: formData,
+          headers: { "Content-Type": "application/json" },
+body: JSON.stringify({
+  name,
+  email,
+  service,
+  message,
+  pageUrl: window.location.href,
+  filePaths: uploadedFilePaths,
+}),
+
         })
       } catch (error) {
         // Silent fail - logo will be referenced in order
