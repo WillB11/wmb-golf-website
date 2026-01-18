@@ -61,19 +61,28 @@ for (const file of selectedFiles) {
 }
 
     try {
-      
-        const response = await fetch("/api/enquiry", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    name,
-    email,
-    service,
-    message,
-    pageUrl: window.location.href,
-    filePaths: uploadedFilePaths,
-  }),
-})
+  const response = await fetch("/api/enquiry", {
+    method: "POST",
+    body: formData, // ✅ FormData for images
+  })
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new Error(data.error || "Failed to submit enquiry")
+  }
+
+  setSubmitStatus("success")
+  setSelectedFiles([])
+  formRef.current?.reset()
+} catch (err: any) {
+  console.error(err)
+  setErrorMessage(err.message || "Something went wrong")
+  setSubmitStatus("error")
+} finally {
+  setIsSubmitting(false)
+}
+
 
       })
 
